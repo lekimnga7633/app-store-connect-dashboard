@@ -1,0 +1,8 @@
+node_modules
+.env
+.DS_Store
+.npm-cache
+*.p8
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal

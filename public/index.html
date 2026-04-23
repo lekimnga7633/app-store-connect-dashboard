@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>App Store Dashboard</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div id="loadingOverlay" class="loading-overlay" hidden>
+      <div class="loading-card" role="status" aria-live="polite" aria-busy="true">
+        <span class="loading-spinner" aria-hidden="true"></span>
+        <span id="loadingText">Loading metrics...</span>
+      </div>
+    </div>
+
+    <main class="container">
+      <header class="topbar">
+        <div class="title-wrap">
+          <h1>App Store Dashboard</h1>
+          <p>Downloads, purchases, and proceeds from App Store Connect daily sales reports.</p>
+        </div>
+        <button id="refreshBtn" class="button">Refresh</button>
+      </header>
+
+      <section class="controls">
+        <label>
+          App
+          <select id="appSelect"></select>
+        </label>
+        <label>
+          Range
+          <select id="daysSelect">
+            <option value="7">Last 7 days</option>
+            <option value="30" selected>Last 30 days</option>
+            <option value="90">Last 90 days</option>
+            <option value="180">Last 180 days</option>
+            <option value="365">Last 365 days</option>
+            <option value="730">Last 730 days</option>
+            <option value="1095">Last 3 years</option>
+            <option value="1825">Last 5 years</option>
+            <option value="3650">Last 10 years</option>
+          </select>
+        </label>
+      </section>
+
+      <p id="status" class="status"></p>
+
+      <section class="cards">
+        <article class="card card-downloads">
+          <h2>Downloads</h2>
+          <p id="downloadsTotal" class="value">-</p>
+        </article>
+        <article class="card card-purchases">
+          <h2>Purchases</h2>
+          <p id="purchasesTotal" class="value">-</p>
+        </article>
+        <article class="card card-gross">
+          <h2>Gross Sales</h2>
+          <p id="grossSalesTotal" class="value">-</p>
+          <p id="grossSalesMeta" class="subvalue"></p>
+        </article>
+        <article class="card card-proceeds">
+          <h2>Developer Proceeds</h2>
+          <p id="proceedsTotal" class="value">-</p>
+          <p id="proceedsMeta" class="subvalue"></p>
+        </article>
+        <article class="card card-range">
+          <h2>Date Range</h2>
+          <p id="dateRange" class="value small">-</p>
+        </article>
+      </section>
+
+      <section class="chart-panel">
+        <div class="panel-title">
+          <h2>Trends</h2>
+          <p>Downloads vs purchases over selected period</p>
+        </div>
+        <canvas id="chart"></canvas>
+      </section>
+
+      <section id="topAppsPanel" class="table-panel">
+        <h2>Top Apps</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>App</th>
+              <th>Downloads</th>
+              <th>Purchases</th>
+            </tr>
+          </thead>
+          <tbody id="topAppsBody"></tbody>
+        </table>
+      </section>
+    </main>
+
+    <script src="/app.js"></script>
+  </body>
+</html>
