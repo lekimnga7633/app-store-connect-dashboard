@@ -23,7 +23,10 @@ const moneyFallbackFormatter = new Intl.NumberFormat(undefined, {
 let appIconMap = new Map();
 let loadingCounter = 0;
 
-refreshBtn.addEventListener("click", () => loadMetrics({ force: true }));
+refreshBtn.addEventListener("click", async () => {
+  await loadApps().catch(() => {});
+  loadMetrics({ force: true });
+});
 appSelect.addEventListener("change", () => loadMetrics());
 daysSelect.addEventListener("change", () => loadMetrics());
 
@@ -145,14 +148,14 @@ function renderTopApps(data) {
 
 function renderAppNameCell(name, appId) {
   const safeName = escapeHtml(name);
-  const iconUrl = appId ? (appIconMap.get(appId) || "") : "";
+  const safeIconUrl = escapeHtml(appId ? (appIconMap.get(appId) || "") : "");
   const fallbackLetter = safeName.slice(0, 1).toUpperCase() || "?";
 
-  if (!iconUrl) {
+  if (!safeIconUrl) {
     return `<span class="app-name-cell"><span class="app-icon app-icon-fallback">${fallbackLetter}</span><span>${safeName}</span></span>`;
   }
 
-  return `<span class="app-name-cell"><img class="app-icon" src="${iconUrl}" alt="" loading="lazy" decoding="async" /><span>${safeName}</span></span>`;
+  return `<span class="app-name-cell"><img class="app-icon" src="${safeIconUrl}" alt="" loading="lazy" decoding="async" /><span>${safeName}</span></span>`;
 }
 
 function drawSeriesChart(canvas, series) {
