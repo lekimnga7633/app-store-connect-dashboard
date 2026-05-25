@@ -20,13 +20,7 @@ const moneyFallbackFormatter = new Intl.NumberFormat(undefined, {
   minimumFractionDigits: 2,
   maximumFractionDigits: 2,
 });
-const APP_ICON_RULES = [
-  { keywords: ["aira"], icon: "/icons/aira.png" },
-  { keywords: ["yomu"], icon: "/icons/yomu.png" },
-  { keywords: ["ledgee"], icon: "/icons/ledgee.png" },
-  { keywords: ["pascal"], icon: "/icons/pascal.png" },
-  { keywords: ["dungeon pusher", "sokoban"], icon: "/icons/sokoban.png" },
-];
+let appIconMap = new Map();
 let loadingCounter = 0;
 
 refreshBtn.addEventListener("click", () => loadMetrics({ force: true }));
@@ -62,7 +56,9 @@ async function loadApps() {
     throw new Error(payload.error || "Failed to load apps.");
   }
 
-  return payload.data || [];
+  const apps = payload.data || [];
+  appIconMap = new Map(apps.map((a) => [a.id, a.iconUrl || ""]));
+  return apps;
 }
 
 async function loadMetrics(options = {}) {
@@ -140,37 +136,23 @@ function renderTopApps(data) {
   topAppsBody.innerHTML = rows
     .map(
       (row) =>
-        `<tr><td>${renderAppNameCell(row.name)}</td><td>${formatMetric(row.downloads)}</td><td>${formatMetric(
+        `<tr><td>${renderAppNameCell(row.name, row.appId)}</td><td>${formatMetric(row.downloads)}</td><td>${formatMetric(
           row.purchases
         )}</td></tr>`
     )
     .join("");
 }
 
-function renderAppNameCell(name) {
+function renderAppNameCell(name, appId) {
   const safeName = escapeHtml(name);
-  const iconPath = getIconPathForAppName(name);
+  const iconUrl = appId ? (appIconMap.get(appId) || "") : "";
   const fallbackLetter = safeName.slice(0, 1).toUpperCase() || "?";
 
-  if (!iconPath) {
+  if (!iconUrl) {
     return `<span class="app-name-cell"><span class="app-icon app-icon-fallback">${fallbackLetter}</span><span>${safeName}</span></span>`;
   }
 
-  return `<span class="app-name-cell"><img class="app-icon" src="${iconPath}" alt="" loading="lazy" decoding="async" /><span>${safeName}</span></span>`;
-}
-
-function getIconPathForAppName(name) {
-  const normalizedName = String(name || "").toLowerCase();
-
-  for (const rule of APP_ICON_RULES) {
-    for (const keyword of rule.keywords) {
-      if (normalizedName.includes(keyword)) {
-        return rule.icon;
-      }
-    }
-  }
-
-  return "";
+  return `<span class="app-name-cell"><img class="app-icon" src="${iconUrl}" alt="" loading="lazy" decoding="async" /><span>${safeName}</span></span>`;
 }
 
 function drawSeriesChart(canvas, series) {

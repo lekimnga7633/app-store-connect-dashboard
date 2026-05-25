@@ -12,6 +12,7 @@ const {
 } = require("./lib/salesMetrics");
 const { CacheStore, DAILY_METRICS_CACHE_VERSION } = require("./lib/cacheStore");
 const { FxService } = require("./lib/fxService");
+const { IconService } = require("./lib/iconService");
 
 const PORT = Number.parseInt(process.env.PORT || "3000", 10);
 const APP_LIST_TTL_MS = 10 * 60 * 1000;
@@ -37,6 +38,7 @@ const cacheStore = new CacheStore({
 const fxService = new FxService(cacheStore, {
   displayCurrency: process.env.DISPLAY_CURRENCY || "USD",
 });
+const iconService = new IconService(cacheStore);
 
 const appListCache = {
   apps: [],
@@ -55,7 +57,9 @@ app.get("/api/health", (req, res) => {
 app.get("/api/apps", async (req, res) => {
   try {
     const apps = await getApps();
-    res.json({ data: apps });
+    const iconUrls = await iconService.getIconUrls(apps.map((a) => a.id));
+    const appsWithIcons = apps.map((a) => ({ ...a, iconUrl: iconUrls.get(a.id) || "" }));
+    res.json({ data: appsWithIcons });
   } catch (error) {
     handleRouteError(res, error);
   }
